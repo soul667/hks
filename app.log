@@ -21844,3 +21844,440 @@
 2025-11-08 02:36:36,921 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
 2025-11-08 02:36:36,921 - 
 [Connection Closed] Code: None, Message: None
+2025-11-08 02:36:40,848 - ============================================================
+2025-11-08 02:36:40,849 -                          儿童活动情绪检测系统                         
+2025-11-08 02:36:40,849 - ============================================================
+2025-11-08 02:36:40,853 - 加载到的配置: {'DASHSCOPE_API_KEY': 'sk-9b155a5f0d8849bdb1957500a34f644e', 'voice': 'Ethan', 'sample_rate': 24000, 'chunk_size_ms': 100, 'audio_sample_rate': 16000, 'audio_chunk_size': 3200, 'video_fps': 5, 'video_max_width': 640, 'video_start_frame': 0, 'video_end_frame_offset': 600, 'model': 'qwen3-omni-flash-realtime', 'url': 'wss://dashscope.aliyuncs.com/api-ws/v1/realtime', 'transcription_model': 'gummy-realtime-v1', 'prompt': '## 1. 角色\n你是一个专业的儿童活动分析专家。\n\n## 2. 任务 \n你的任务是分析我稍后提供的视频（或视频描述），并根据下方的“核心判定标准”和“补充说明”，输出对该活动的分析。\n\n## 3. 特殊提示\n  搭积木属于过家家\n  做工具之类的手工活动属于做手工\n## 4. 输出格式 \n你必须严格按照以下JSON Schema格式返回你的分析结果。不要包含任何JSON Schema之外的解释性文字。\n\n```json\n{\n  "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",\n  "type": "object",\n  "title": "儿童活动分析结果",\n  "properties": {\n      "insideorroom": {\n        "type": "string",\n        "description": "判断活动发生在室内还是室外"\n      },\n      "voice_output": {\n        "type": "string",\n        "description": "音频转录结果"\n      },\n      "activity_label": {\n        "type": "string",\n        "description": "从提供的列表中选择的最匹配的活动标签。",\n        "enum": ["画画", "做手工", "过家家", "运动"]\n      },\n      "content_description": {\n        "type": "string",\n        "description": "对视频中观察到的儿童活动和关键物体的客观描述（已忽略贴纸等非真实元素）。"\n      },\n      "reason": {\n        "type": "string",\n        "description": "结合“核心判定标准”、“补充说明”及“音频转录”内容，详细解释为什么选择该活动标签。"\n      }\n  },\n  "required": [\n    "insideorroom",\n    "voice_output",\n    "activity_label",\n    "content_description",\n    "reason"\n  ]\n}\n', 'evaluator': {'enabled': True, 'dataset_path': './test/考核点1：活动状态识别/', 'results_path': './eval_results.json'}}   sk-9b155a5f0d8849bdb1957500a34f644e
+2025-11-08 02:36:40,853 - 评估模式已启用。
+2025-11-08 02:36:40,854 - 在 ./test/考核点1：活动状态识别/ 中找到 15 个视频文件进行评估。
+2025-11-08 02:36:40,854 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/做手工1.mov
+2025-11-08 02:36:40,854 - Extracting audio from ./test/考核点1：活动状态识别/做手工1.mov...
+2025-11-08 02:36:41,009 - Audio extracted: 2497036 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:36:41,010 - Extracting video frames from ./test/考核点1：活动状态识别/做手工1.mov...
+2025-11-08 02:36:41,031 - 配置: 每秒提取 5 帧
+2025-11-08 02:36:41,031 - 视频信息: 60.00 FPS, 4710 帧, 78.50 秒
+2025-11-08 02:36:41,031 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.00 秒)
+2025-11-08 02:36:41,031 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.00秒)
+2025-11-08 02:36:41,031 - 提取设置: 每 12 帧提取 1 帧
+2025-11-08 02:36:41,032 - 预计提取 50 帧 (平均 5.000 FPS)
+2025-11-08 02:36:42,162 - 提取完成: 从 600 帧中提取了 50 帧
+2025-11-08 02:36:42,162 - 实际平均帧率: 5.000 FPS (每 0.20 秒 1 帧)
+2025-11-08 02:36:42,163 - ✓ [特征提取] 完成: 做手工1.mov -> 50 帧, 2497036 字节音频
+2025-11-08 02:36:42,163 -   - 音频提取耗时: 0.156s, 视频帧提取耗时: 1.153s
+2025-11-08 02:36:42,164 - [模型推理] 开始...
+2025-11-08 02:36:42,401 - Websocket connected
+2025-11-08 02:36:42,402 - ✓ Session created: sess_WLqK8YKA2fOn4GJjt7U64
+
+2025-11-08 02:36:42,439 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:36:42,623 - ✓ Audio player initialized
+
+2025-11-08 02:36:43,124 - [模型推理] 发送音频数据...
+2025-11-08 02:36:43,416 - [模型推理] 发送视频帧 (50 帧)...
+2025-11-08 02:36:48,890 - 
+[AI 响应开始]
+
+2025-11-08 02:36:50,858 - 
+============================================================
+2025-11-08 02:36:50,859 - [响应完成]
+2025-11-08 02:36:50,859 - 无法解析为JSON, 原始文本: ```json{
+ "insideorroom": "室内",
+ "voice_output": "哦",
+ "activity_label": "做手工",
+ "content_description": "一个儿童手持一个用黏土或彩泥制作的手工作品。该作品是一个微缩的场景，包含一个兔子造型的角色、一个胡萝卜造型的房子，以及一个手持小胡萝卜的兔子。整个场景置于一个绿色的底座上，周围还有用黏土制作的叶子和花朵作为装饰。",
+ "reason": "根据“补充说明”，“做工具之类的手工活动属于做手工”。该活动的核心是使用黏土等材料，通过手工制作一个具有特定主题的、有形的物体（即微缩场景），这完全符合“做手工”的定义。虽然场景中包含动物角色，但它是一个制作完成的成品，而不是一个动态的“过家家”游戏。因此，最准确的标签是“做手工”。”}
+```
+2025-11-08 02:36:50,859 - [性能指标]
+2025-11-08 02:36:50,859 -   - Response ID: resp_R9mBrgpYdwlpM9RwL2UeC
+2025-11-08 02:36:50,860 - ============================================================
+2025-11-08 02:36:50,860 - [Metric] response: resp_R9mBrgpYdwlpM9RwL2UeC, first text delay: None, first audio delay: None
+2025-11-08 02:36:50,860 - ✓ [模型推理] 完成.
+2025-11-08 02:36:50,861 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/做手工2.mov
+2025-11-08 02:36:50,861 - Extracting audio from ./test/考核点1：活动状态识别/做手工2.mov...
+2025-11-08 02:36:50,966 - Audio extracted: 1874016 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:36:50,966 - Extracting video frames from ./test/考核点1：活动状态识别/做手工2.mov...
+2025-11-08 02:36:50,982 - 配置: 每秒提取 5 帧
+2025-11-08 02:36:50,982 - 视频信息: 59.93 FPS, 3540 帧, 59.07 秒
+2025-11-08 02:36:50,983 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.01 秒)
+2025-11-08 02:36:50,983 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.01秒)
+2025-11-08 02:36:50,984 - 提取设置: 每 11 帧提取 1 帧
+2025-11-08 02:36:50,984 - 预计提取 54 帧 (平均 5.394 FPS)
+2025-11-08 02:36:53,927 - 提取完成: 从 600 帧中提取了 55 帧
+2025-11-08 02:36:53,928 - 实际平均帧率: 5.494 FPS (每 0.18 秒 1 帧)
+2025-11-08 02:36:53,929 - ✓ [特征提取] 完成: 做手工2.mov -> 55 帧, 1874016 字节音频
+2025-11-08 02:36:53,929 -   - 音频提取耗时: 0.106s, 视频帧提取耗时: 2.962s
+2025-11-08 02:36:53,930 - [模型推理] 开始...
+2025-11-08 02:36:54,078 - Websocket connected
+2025-11-08 02:36:54,079 - ✓ Session created: sess_RmweEY9hml9YkTXcmgFsN
+
+2025-11-08 02:36:54,132 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:36:54,387 - ✓ Audio player initialized
+
+2025-11-08 02:36:54,887 - [模型推理] 发送音频数据...
+2025-11-08 02:36:55,157 - [模型推理] 发送视频帧 (55 帧)...
+2025-11-08 02:36:57,870 - 
+[AI 响应开始]
+
+2025-11-08 02:36:59,739 - 
+============================================================
+2025-11-08 02:36:59,739 - [响应完成]
+2025-11-08 02:36:59,739 - 完整JSON: {
+ "insideorroom": "室内",
+ "voice_output": "哦，这个小房子是橙色的，屋顶是绿色的。这边还有一个蓝色的房子。嗯，这个是用纸做的。哦，对，就是这个，嗯，好像可以随便摆。哦。",
+ "activity_label": "做手工",
+ "content_description": "在白色的桌面上，有两只用彩色卡纸折叠成的小房子，一只橙色屋顶，一只蓝色。一只手正准备在一张粉色的长条形纸上进行折叠操作。",
+ "reason": "根据“特殊提示”，做工具之类的手工活动属于“做手工”。视频内容是将一张纸进行折叠，这是制作立体物体的典型手工步骤。同时，桌面上已经存在用卡纸制作好的成品（小房子），进一步证实了这是一个手工制作的过程。因此，该活动属于“做手工”。"
+}
+2025-11-08 02:36:59,740 - [性能指标]
+2025-11-08 02:36:59,740 -   - Response ID: resp_TuQeEyJ7uY4kp75TIhs6n
+2025-11-08 02:36:59,740 - ============================================================
+2025-11-08 02:36:59,740 - [Metric] response: resp_TuQeEyJ7uY4kp75TIhs6n, first text delay: None, first audio delay: None
+2025-11-08 02:36:59,740 - ✓ [模型推理] 完成.
+2025-11-08 02:36:59,741 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/做手工3.mov
+2025-11-08 02:36:59,742 - Extracting audio from ./test/考核点1：活动状态识别/做手工3.mov...
+2025-11-08 02:36:59,836 - Audio extracted: 903688 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:36:59,836 - Extracting video frames from ./test/考核点1：活动状态识别/做手工3.mov...
+2025-11-08 02:36:59,849 - 配置: 每秒提取 5 帧
+2025-11-08 02:36:59,850 - 视频信息: 60.00 FPS, 1723 帧, 28.72 秒
+2025-11-08 02:36:59,850 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.00 秒)
+2025-11-08 02:36:59,850 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.00秒)
+2025-11-08 02:36:59,850 - 提取设置: 每 12 帧提取 1 帧
+2025-11-08 02:36:59,850 - 预计提取 50 帧 (平均 5.000 FPS)
+2025-11-08 02:37:01,219 - 提取完成: 从 600 帧中提取了 50 帧
+2025-11-08 02:37:01,219 - 实际平均帧率: 5.000 FPS (每 0.20 秒 1 帧)
+2025-11-08 02:37:01,220 - ✓ [特征提取] 完成: 做手工3.mov -> 50 帧, 903688 字节音频
+2025-11-08 02:37:01,220 -   - 音频提取耗时: 0.095s, 视频帧提取耗时: 1.383s
+2025-11-08 02:37:01,221 - [模型推理] 开始...
+2025-11-08 02:37:01,379 - Websocket connected
+2025-11-08 02:37:01,380 - ✓ Session created: sess_JVv2YcpjNlF6MabuYrODq
+
+2025-11-08 02:37:01,423 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:37:01,442 - ✓ Audio player initialized
+
+2025-11-08 02:37:01,943 - [模型推理] 发送音频数据...
+2025-11-08 02:37:02,173 - [模型推理] 发送视频帧 (50 帧)...
+2025-11-08 02:37:05,945 - 
+[AI 响应开始]
+
+2025-11-08 02:37:07,582 - 
+============================================================
+2025-11-08 02:37:07,582 - [响应完成]
+2025-11-08 02:37:07,583 - 完整JSON: {
+ "insideorroom": "室内",
+ "voice_output": "",
+ "activity_label": "做手工",
+ "content_description": "视频中，一个孩子正在用橙色的毛根条和一个蓝色的塑料圈制作一个手工制品。孩子将橙色的毛根条缠绕在蓝色的圈上，进行编织或缠绕操作。",
+ "reason": "根据核心判定标准，'做工具之类的手工活动属于做手工'。视频内容展示了孩子使用毛根条和塑料圈等材料，通过缠绕、编织等具体操作来制作物品的过程。这完全符合'做手工'活动的定义，与过家家（搭积木）有本质区别。因此，选择'做手工'作为活动标签。"
+}
+2025-11-08 02:37:07,583 - [性能指标]
+2025-11-08 02:37:07,583 -   - Response ID: resp_OnlMPpknAoomPdGYzpbgN
+2025-11-08 02:37:07,584 - ============================================================
+2025-11-08 02:37:07,584 - [Metric] response: resp_OnlMPpknAoomPdGYzpbgN, first text delay: None, first audio delay: None
+2025-11-08 02:37:07,584 - ✓ [模型推理] 完成.
+2025-11-08 02:37:07,584 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/做手工4.mov
+2025-11-08 02:37:07,585 - Extracting audio from ./test/考核点1：活动状态识别/做手工4.mov...
+2025-11-08 02:37:07,731 - Audio extracted: 2920546 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:37:07,732 - Extracting video frames from ./test/考核点1：活动状态识别/做手工4.mov...
+2025-11-08 02:37:07,746 - 配置: 每秒提取 5 帧
+2025-11-08 02:37:07,746 - 视频信息: 60.00 FPS, 5507 帧, 91.78 秒
+2025-11-08 02:37:07,746 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.00 秒)
+2025-11-08 02:37:07,747 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.00秒)
+2025-11-08 02:37:07,747 - 提取设置: 每 12 帧提取 1 帧
+2025-11-08 02:37:07,747 - 预计提取 50 帧 (平均 5.000 FPS)
+2025-11-08 02:37:08,804 - 提取完成: 从 600 帧中提取了 50 帧
+2025-11-08 02:37:08,804 - 实际平均帧率: 5.000 FPS (每 0.20 秒 1 帧)
+2025-11-08 02:37:08,805 - ✓ [特征提取] 完成: 做手工4.mov -> 50 帧, 2920546 字节音频
+2025-11-08 02:37:08,805 -   - 音频提取耗时: 0.147s, 视频帧提取耗时: 1.073s
+2025-11-08 02:37:08,806 - [模型推理] 开始...
+2025-11-08 02:37:08,957 - Websocket connected
+2025-11-08 02:37:08,958 - ✓ Session created: sess_Z28wEF4AT8mSgapps9tUl
+
+2025-11-08 02:37:09,008 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:37:09,026 - ✓ Audio player initialized
+
+2025-11-08 02:37:09,527 - [模型推理] 发送音频数据...
+2025-11-08 02:37:09,883 - [模型推理] 发送视频帧 (50 帧)...
+2025-11-08 02:37:16,107 - 
+[AI 响应开始]
+
+2025-11-08 02:37:17,771 - 
+============================================================
+2025-11-08 02:37:17,772 - [响应完成]
+2025-11-08 02:37:17,772 - 完整JSON: {
+ "insideorroom": "室内",
+ "voice_output": "先做一个鲨鱼的刀",
+ "activity_label": "做手工",
+ "content_description": "一名儿童正在桌面上进行手工制作。桌面上散落着卡通鲨鱼、鱼、贝类等形状的彩色贴纸或纸片。儿童用双手将一张带有透明塑料片和刀柄形状的纸板，贴合在一张印有鲨鱼图案的卡片上。",
+ "reason": "该活动属于做手工。因为儿童的活动内容是使用纸板、贴纸等材料制作一个特定形状（刀），这符合做手工的定义。在音频中，儿童明确提到“先做一个鲨鱼的刀”，这直接指明了手工制作的最终目标。"
+}
+2025-11-08 02:37:17,772 - [性能指标]
+2025-11-08 02:37:17,772 -   - Response ID: resp_MfPKrPRVNzXx8ATHLSKjz
+2025-11-08 02:37:17,773 - ============================================================
+2025-11-08 02:37:17,773 - [Metric] response: resp_MfPKrPRVNzXx8ATHLSKjz, first text delay: None, first audio delay: None
+2025-11-08 02:37:17,773 - ✓ [模型推理] 完成.
+2025-11-08 02:37:17,774 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/画画1.mov
+2025-11-08 02:37:17,774 - Extracting audio from ./test/考核点1：活动状态识别/画画1.mov...
+2025-11-08 02:37:17,951 - Audio extracted: 2571932 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:37:17,952 - Extracting video frames from ./test/考核点1：活动状态识别/画画1.mov...
+2025-11-08 02:37:17,975 - 配置: 每秒提取 5 帧
+2025-11-08 02:37:17,975 - 视频信息: 60.00 FPS, 4851 帧, 80.85 秒
+2025-11-08 02:37:17,975 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.00 秒)
+2025-11-08 02:37:17,976 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.00秒)
+2025-11-08 02:37:17,976 - 提取设置: 每 12 帧提取 1 帧
+2025-11-08 02:37:17,976 - 预计提取 50 帧 (平均 5.000 FPS)
+2025-11-08 02:37:19,199 - 提取完成: 从 600 帧中提取了 50 帧
+2025-11-08 02:37:19,200 - 实际平均帧率: 5.000 FPS (每 0.20 秒 1 帧)
+2025-11-08 02:37:19,200 - ✓ [特征提取] 完成: 画画1.mov -> 50 帧, 2571932 字节音频
+2025-11-08 02:37:19,201 -   - 音频提取耗时: 0.178s, 视频帧提取耗时: 1.248s
+2025-11-08 02:37:19,202 - [模型推理] 开始...
+2025-11-08 02:37:19,359 - Websocket connected
+2025-11-08 02:37:19,360 - ✓ Session created: sess_ZcbHotmdoahmX5c5ZsJNo
+
+2025-11-08 02:37:19,403 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:37:19,422 - ✓ Audio player initialized
+
+2025-11-08 02:37:19,923 - [模型推理] 发送音频数据...
+2025-11-08 02:37:20,314 - [模型推理] 发送视频帧 (50 帧)...
+2025-11-08 02:37:27,243 - 
+[AI 响应开始]
+
+2025-11-08 02:37:28,679 - 
+============================================================
+2025-11-08 02:37:28,679 - [响应完成]
+2025-11-08 02:37:28,679 - 完整JSON: {
+ "insideorroom": "室内",
+ "voice_output": "思考一下再慢慢下笔",
+ "activity_label": "画画",
+ "content_description": "一名小女孩坐在椅子上，低头看着手中的画笔和纸张，她身穿一件带有蕾丝花边领子的蓝色针织开衫。背景是书架和柜子。",
+ "reason": "根据音频中的“思考一下再慢慢下笔”这句话，可以明确判断出该活动是画画。同时，视频中女孩拿着画笔，专注于在纸上进行创作，这与“画画”的标签完全吻合。因此，该活动属于‘画画’。"
+}
+2025-11-08 02:37:28,680 - [性能指标]
+2025-11-08 02:37:28,680 -   - Response ID: resp_CwYibxgpeAKCSAaBLVV7Z
+2025-11-08 02:37:28,680 - ============================================================
+2025-11-08 02:37:28,680 - [Metric] response: resp_CwYibxgpeAKCSAaBLVV7Z, first text delay: None, first audio delay: None
+2025-11-08 02:37:28,680 - ✓ [模型推理] 完成.
+2025-11-08 02:37:28,681 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/画画2.mov
+2025-11-08 02:37:28,682 - Extracting audio from ./test/考核点1：活动状态识别/画画2.mov...
+2025-11-08 02:37:28,844 - Audio extracted: 3355408 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:37:28,845 - Extracting video frames from ./test/考核点1：活动状态识别/画画2.mov...
+2025-11-08 02:37:28,856 - 配置: 每秒提取 5 帧
+2025-11-08 02:37:28,856 - 视频信息: 59.92 FPS, 6314 帧, 105.37 秒
+2025-11-08 02:37:28,857 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.01 秒)
+2025-11-08 02:37:28,857 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.01秒)
+2025-11-08 02:37:28,857 - 提取设置: 每 11 帧提取 1 帧
+2025-11-08 02:37:28,857 - 预计提取 54 帧 (平均 5.393 FPS)
+2025-11-08 02:37:29,898 - 提取完成: 从 600 帧中提取了 55 帧
+2025-11-08 02:37:29,898 - 实际平均帧率: 5.493 FPS (每 0.18 秒 1 帧)
+2025-11-08 02:37:29,899 - ✓ [特征提取] 完成: 画画2.mov -> 55 帧, 3355408 字节音频
+2025-11-08 02:37:29,899 -   - 音频提取耗时: 0.163s, 视频帧提取耗时: 1.054s
+2025-11-08 02:37:29,901 - [模型推理] 开始...
+2025-11-08 02:37:30,116 - Websocket connected
+2025-11-08 02:37:30,117 - ✓ Session created: sess_MB9k9C6yBvek3m9EGyKzq
+
+2025-11-08 02:37:30,203 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:37:30,221 - ✓ Audio player initialized
+
+2025-11-08 02:37:30,722 - [模型推理] 发送音频数据...
+2025-11-08 02:37:31,071 - [模型推理] 发送视频帧 (55 帧)...
+2025-11-08 02:37:38,081 - 
+[AI 响应开始]
+
+2025-11-08 02:37:38,689 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x000000003CB41B50>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3model repeat output happened'
+2025-11-08 02:37:38,689 - fin=1 opcode=8 data=b'\x03\xf3model repeat output happened' - goodbye
+2025-11-08 02:37:38,690 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:37:38,690 - [模型推理] 检测到回调错误: closed: None None
+2025-11-08 02:37:38,743 - [模型推理] 将在 1 秒后重试...
+2025-11-08 02:37:39,744 - [模型推理] 第 2 次尝试...
+2025-11-08 02:37:39,906 - Websocket connected
+2025-11-08 02:37:39,907 - ✓ Session created: sess_QntsX3MfNDgVPrFfeiMJZ
+
+2025-11-08 02:37:39,945 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:37:39,962 - ✓ Audio player initialized
+
+2025-11-08 02:37:40,463 - [模型推理] 发送音频数据...
+2025-11-08 02:37:40,813 - [模型推理] 发送视频帧 (55 帧)...
+2025-11-08 02:37:47,635 - 
+[AI 响应开始]
+
+2025-11-08 02:37:50,331 - 
+============================================================
+2025-11-08 02:37:50,331 - [响应完成]
+2025-11-08 02:37:50,332 - 完整JSON: {
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "type": "object",
+ "title": "儿童活动分析结果",
+ "properties": {
+ "insideorroom": {
+ "type": "string",
+ "description": "判断活动发生在室内还是室外"
+ },
+ "voice_output": {
+ "type": "string",
+ "description": "音频转录结果"
+ },
+ "activity_label": {
+ "type": "string",
+ "description": "从提供的列表中选择的最匹配的活动标签。",
+ "enum": ["画画", "做手工", "过家家", "运动"]
+ },
+ "content_description": {
+ "type": "string",
+ "description": "对视频中观察到的儿童活动和关键物体的客观描述（已忽略贴纸等非真实元素）。"
+ },
+ "reason": {
+ "type": "string",
+ "description": "结合“核心判定标准”、“补充说明”及“音频转录”内容，详细解释为什么选择该活动标签。"
+ }
+ },
+ "required": [
+ "insideorroom",
+ "voice_output",
+ "activity_label",
+ "content_description",
+ "reason"
+ ]
+}
+2025-11-08 02:37:50,332 - [性能指标]
+2025-11-08 02:37:50,332 -   - Response ID: resp_Ciwm2MbFzIIDUEYkJqDsp
+2025-11-08 02:37:50,332 - ============================================================
+2025-11-08 02:37:50,333 - [Metric] response: resp_Ciwm2MbFzIIDUEYkJqDsp, first text delay: None, first audio delay: None
+2025-11-08 02:37:50,333 - ✓ [模型推理] 完成.
+2025-11-08 02:37:50,334 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/画画3.mov
+2025-11-08 02:37:50,334 - Extracting audio from ./test/考核点1：活动状态识别/画画3.mov...
+2025-11-08 02:37:50,548 - Audio extracted: 4819980 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:37:50,549 - Extracting video frames from ./test/考核点1：活动状态识别/画画3.mov...
+2025-11-08 02:37:50,564 - 配置: 每秒提取 5 帧
+2025-11-08 02:37:50,564 - 视频信息: 59.94 FPS, 9057 帧, 151.10 秒
+2025-11-08 02:37:50,564 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.01 秒)
+2025-11-08 02:37:50,565 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.01秒)
+2025-11-08 02:37:50,565 - 提取设置: 每 11 帧提取 1 帧
+2025-11-08 02:37:50,565 - 预计提取 54 帧 (平均 5.395 FPS)
+2025-11-08 02:37:52,303 - 提取完成: 从 600 帧中提取了 55 帧
+2025-11-08 02:37:52,303 - 实际平均帧率: 5.495 FPS (每 0.18 秒 1 帧)
+2025-11-08 02:37:52,304 - ✓ [特征提取] 完成: 画画3.mov -> 55 帧, 4819980 字节音频
+2025-11-08 02:37:52,304 -   - 音频提取耗时: 0.215s, 视频帧提取耗时: 1.755s
+2025-11-08 02:37:52,306 - [模型推理] 开始...
+2025-11-08 02:37:52,476 - Websocket connected
+2025-11-08 02:37:52,477 - ✓ Session created: sess_YPv4eDxoljkGDqi5DxOut
+
+2025-11-08 02:37:52,508 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:37:52,681 - ✓ Audio player initialized
+
+2025-11-08 02:37:53,182 - [模型推理] 发送音频数据...
+2025-11-08 02:37:53,684 - [模型推理] 发送视频帧 (55 帧)...
+2025-11-08 02:38:02,299 - 
+[AI 响应开始]
+
+2025-11-08 02:38:03,927 - 
+============================================================
+2025-11-08 02:38:03,927 - [响应完成]
+2025-11-08 02:38:03,928 - 完整JSON: {
+ "insideorroom": "室内",
+ "voice_output": "哼哼哼 哼哼哼",
+ "activity_label": "画画",
+ "content_description": "一个孩子坐在室内桌子前，用笔在白纸上画画。画面中可以看到孩子手部的动作以及纸上正在绘制的简单线条图案。",
+ "reason": "根据音频内容，可以清晰地听到孩子在哼唱和一些低语声，这表明他正在进行一项安静的、需要注意力的个人活动。视频画面显示，他正专注地在纸上进行绘画创作。尽管音频中也包含了一些其他声音，但结合孩子哼唱这一行为，可以判断他正在享受创作的过程。因此，该活动最符合“画画”这一标签。"
+}
+2025-11-08 02:38:03,928 - [性能指标]
+2025-11-08 02:38:03,928 -   - Response ID: resp_PO6UqwdKxuNwXTfW2azNh
+2025-11-08 02:38:03,928 - ============================================================
+2025-11-08 02:38:03,928 - [Metric] response: resp_PO6UqwdKxuNwXTfW2azNh, first text delay: None, first audio delay: None
+2025-11-08 02:38:03,929 - ✓ [模型推理] 完成.
+2025-11-08 02:38:03,930 - 
+[特征提取] 开始处理: ./test/考核点1：活动状态识别/过家家1.mov
+2025-11-08 02:38:03,930 - Extracting audio from ./test/考核点1：活动状态识别/过家家1.mov...
+2025-11-08 02:38:04,098 - Audio extracted: 2150542 bytes (完整音频，未裁剪, in-memory)
+2025-11-08 02:38:04,099 - Extracting video frames from ./test/考核点1：活动状态识别/过家家1.mov...
+2025-11-08 02:38:04,148 - 配置: 每秒提取 5 帧
+2025-11-08 02:38:04,148 - 视频信息: 60.00 FPS, 4063 帧, 67.72 秒
+2025-11-08 02:38:04,148 - 裁剪范围: 第 0 帧 到 第 600 帧 (共 600 帧, 10.00 秒)
+2025-11-08 02:38:04,149 - 跳过: 开头 0 帧 (0.00秒), 结尾 600 帧 (10.00秒)
+2025-11-08 02:38:04,149 - 提取设置: 每 12 帧提取 1 帧
+2025-11-08 02:38:04,149 - 预计提取 50 帧 (平均 5.000 FPS)
+2025-11-08 02:38:07,484 - 提取完成: 从 600 帧中提取了 50 帧
+2025-11-08 02:38:07,485 - 实际平均帧率: 5.000 FPS (每 0.20 秒 1 帧)
+2025-11-08 02:38:07,487 - ✓ [特征提取] 完成: 过家家1.mov -> 50 帧, 2150542 字节音频
+2025-11-08 02:38:07,487 -   - 音频提取耗时: 0.168s, 视频帧提取耗时: 3.388s
+2025-11-08 02:38:07,488 - [模型推理] 开始...
+2025-11-08 02:38:07,645 - Websocket connected
+2025-11-08 02:38:07,646 - ✓ Session created: sess_ZX6yrBiMNhMw5xTPcngxl
+
+2025-11-08 02:38:07,690 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:38:07,857 - ✓ Audio player initialized
+
+2025-11-08 02:38:08,358 - [模型推理] 发送音频数据...
+2025-11-08 02:38:08,641 - [模型推理] 发送视频帧 (50 帧)...
+2025-11-08 02:38:12,996 - 
+[AI 响应开始]
+
+2025-11-08 02:38:14,525 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x000000003CB50550>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3model repeat output happened'
+2025-11-08 02:38:14,526 - fin=1 opcode=8 data=b'\x03\xf3model repeat output happened' - goodbye
+2025-11-08 02:38:14,526 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:38:14,526 - [模型推理] 检测到回调错误: closed: None None
+2025-11-08 02:38:14,543 - [模型推理] 将在 1 秒后重试...
+2025-11-08 02:38:15,544 - [模型推理] 第 2 次尝试...
+2025-11-08 02:38:15,700 - Websocket connected
+2025-11-08 02:38:15,701 - ✓ Session created: sess_MTC3Kch8VXWcVrteYAHFO
+
+2025-11-08 02:38:15,745 - ✓ Connection opened, initializing audio player...
+2025-11-08 02:38:15,759 - ✓ Audio player initialized
+
+2025-11-08 02:38:16,259 - [模型推理] 发送音频数据...
+2025-11-08 02:38:16,554 - [模型推理] 发送视频帧 (50 帧)...
+2025-11-08 02:38:21,488 - 
+[AI 响应开始]
+
+2025-11-08 02:38:23,419 - 
+============================================================
+2025-11-08 02:38:23,419 - [响应完成]
+2025-11-08 02:38:23,420 - 完整JSON: {
+ "insideorroom": "室外",
+ "voice_output": "嗯",
+ "activity_label": "过家家",
+ "content_description": "一名儿童在室外的铺有地砖的地面上，正在玩一个彩色的医疗主题玩具。该玩具包含一个带有显示屏的检查台、一个粉红色的抽屉、一个黄色的托盘，以及听诊器等配件。儿童正在操作这些玩具，模拟医生或护士的场景。",
+ "reason": "根据核心判定标准，此活动属于“过家家”类别。补充说明中明确指出“搭积木属于过家家”，而此活动同样通过使用玩具道具来模拟一个特定的职业场景（如医生），这与过家家的定义相符。"
+}
+2025-11-08 02:38:23,420 - [性能指标]
+2025-11-08 02:38:23,420 -   - Response ID: resp_ESC4Vd8r1PNxVtyGXeNKZ
+2025-11-08 02:38:23,420 - ============================================================
+2025-11-08 02:38:23,420 - [Metric] response: resp_ESC4Vd8r1PNxVtyGXeNKZ, first text delay: None, first audio delay: None
+2025-11-08 02:39:50,821 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x00000000379F1400>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:39:50,821 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:39:50,821 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:39:59,721 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x0000000037992E90>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:39:59,722 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:39:59,722 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:40:07,584 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x000000003CB70190>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:40:07,585 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:40:07,585 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:40:17,754 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x000000003CB21940>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:40:17,754 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:40:17,755 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:40:28,661 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x000000003CB228B0>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:40:28,661 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:40:28,662 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:40:50,379 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x00000000379E2470>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:40:50,379 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:40:50,379 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:41:03,912 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x00000000379E3460>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:41:03,912 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:41:03,913 - 
+[Connection Closed] Code: None, Message: None
+2025-11-08 02:41:23,403 - error from callback <bound method OmniRealtimeConversation.on_error of <dashscope.audio.qwen_omni.omni_realtime.OmniRealtimeConversation object at 0x000000003CB50E50>>: websocket closed due to fin=1 opcode=8 data=b'\x03\xf3Response timeout.'
+2025-11-08 02:41:23,403 - fin=1 opcode=8 data=b'\x03\xf3Response timeout.' - goodbye
+2025-11-08 02:41:23,403 - 
+[Connection Closed] Code: None, Message: None

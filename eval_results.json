@@ -1,11 +1,11 @@
 {
-    "accuracy": 80.0,
-    "total_files": 15,
-    "correct_predictions": 12,
+    "accuracy": 100.0,
+    "total_files": 14,
+    "correct_predictions": 14,
     "per_class": {
         "做手工": {
-            "total": 4,
-            "correct": 4,
+            "total": 6,
+            "correct": 6,
             "accuracy": 100.0
         },
         "画画": {
@@ -19,183 +19,186 @@
             "accuracy": 100.0
         },
         "运动": {
-            "total": 4,
+            "total": 1,
             "correct": 1,
-            "accuracy": 25.0
+            "accuracy": 100.0
         }
     },
     "results": [
         {
-            "video_path": "./test/考核点1：活动状态识别/做手工1.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"嗯？\",\n \"activity_label\": \"做手工\",\n \"content_description\": \"一个孩子正在玩一个黏土手工作品。作品是一个微缩的胡萝卜小屋，由橙色的胡萝卜、绿色的叶子作为屋顶和植物。屋前有一只白色的小兔子，旁边还有一个小胡萝卜。孩子的手在旁边扶着这个作品。\",\n \"reason\": \"根据核心判定标准，搭积木属于过家家，做工具之类的手工活动属于做手工。该视频展示的是一个用黏土制作的立体场景，这完全符合“做手工”的定义。补充说明也支持这一判断，因为这是制作手工艺品的活动。因此，选择“做手工”作为活动标签。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/做手工（卡顿停滞）.mp4",
+            "prediction": "{\n \"activity_label\": \"做手工\",\n \"content_description\": \"一个扎着双马尾的小女孩坐在桌子前，正在专注地折叠一张红色的纸。她周围散落着彩色的蜡笔、胶水和几个已经完成的折纸作品。\"\n}",
             "timings": {
-                "audio_extract_time": 0.14784002304077148,
-                "video_extract_time": 1.4061543941497803,
-                "send_time": 0.42628049850463867,
-                "wait_time": 8.281009912490845,
-                "total_inference_time": 8.707290410995483
+                "total_extract_time": 1.9918212890625,
+                "audio_extract_time": 1.9918212890625,
+                "video_extract_time": 1.9918212890625,
+                "send_time": 0.2091984748840332,
+                "wait_time": 1.0192549228668213,
+                "total_inference_time": 1.2284533977508545
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/做手工2.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"嗯嗯\",\n \"activity_label\": \"做手工\",\n \"content_description\": \"在白色桌面上，一双儿童的手正在折叠一张粉红色的长方形纸张。背景中可以看到两个用彩色纸板制作的小房子模型。\",\n \"reason\": \"根据提供的“核心判定标准”，当活动涉及“做工具之类的手工活动”时，应选择“做手工”。视频中，儿童正在对纸张进行折叠操作，这属于制作过程中的一个步骤。虽然背景中的纸房子模型可能与“过家家”游戏相关，但活动的主要焦点是儿童手中的折叠动作，符合“做手工”的定义。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/做手工（卡顿停滞）2.mp4",
+            "prediction": "{\n \"activity_label\": \"做手工\",\n \"content_description\": \"视频中，一个女孩坐在桌子旁。桌面上有彩色纸张，她正在用一张绿色的纸进行折叠。她的旁边已经有一个折叠好的绿色折纸作品。\"\n}",
             "timings": {
-                "audio_extract_time": 0.12895750999450684,
-                "video_extract_time": 3.4425642490386963,
-                "send_time": 0.34629011154174805,
-                "wait_time": 4.1712048053741455,
-                "total_inference_time": 4.5174949169158936
+                "total_extract_time": 1.9312987327575684,
+                "audio_extract_time": 1.9312987327575684,
+                "video_extract_time": 1.9312987327575684,
+                "send_time": 0.25651049613952637,
+                "wait_time": 0.9931850433349609,
+                "total_inference_time": 1.2496955394744873
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/做手工3.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"是贝鲁呀 bilibili\",\n \"activity_label\": \"做手工\",\n \"content_description\": \"一个孩子正在展示一个用橙色绒毛管和蓝色塑料圈制作的物品，看起来像一个手工玩具或装饰品。\",\n \"reason\": \"该活动涉及使用特定的材料（如绒毛管和塑料圈）来制作一个物品，这符合“做手工”的定义。根据“特殊提示”，制作工具之类的手工活动属于做手工。因此，最匹配的活动是“做手工”。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/做手工（工具缺失）.mp4",
+            "prediction": "{\n \"activity_label\": \"做手工\",\n \"content_description\": \"一个扎着短发、穿着浅色上衣的小女孩正坐在桌子前进行手工活动。她先是拿起一瓶蓝白相间的胶水，接着将胶水挤到一张铺在桌上的蓝色纸板上，然后用手扶着纸板。\"\n}",
             "timings": {
-                "audio_extract_time": 0.1161198616027832,
-                "video_extract_time": 1.1688954830169678,
-                "send_time": 0.3611745834350586,
-                "wait_time": 4.492294549942017,
-                "total_inference_time": 4.853469133377075
+                "total_extract_time": 1.9364240169525146,
+                "audio_extract_time": 1.9364240169525146,
+                "video_extract_time": 1.9364240169525146,
+                "send_time": 0.30178165435791016,
+                "wait_time": 1.1774208545684814,
+                "total_inference_time": 1.4792025089263916
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/做手工4.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"先做一个鲨鱼的刀\",\n \"activity_label\": \"做手工\",\n \"content_description\": \"一个孩子正在一张白色的桌子上进行手工活动。他/她正在用工具（一把红色的剪刀）将一张印有鲨鱼图案的彩色纸张剪下来，并将一个纸质的刀具模型粘贴到一个白色的大板上。背景中可以看到一些零散的纸张。\",\n \"reason\": \"根据“补充说明”，“做工具之类的手工活动属于做手工”。在音频中，孩子明确说出“先做一个鲨鱼的刀”，并使用剪刀和胶水等工具将纸张剪裁和粘贴成一个工具的形状，这完全符合“做手工”的定义。虽然有“做工具”的元素，但整体活动是围绕着制作一个纸艺品展开的，因此归类为“做手工”而非“过家家”。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/做手工（情绪沮丧_操作失败）2.mp4",
+            "prediction": "{\n \"activity_label\": \"做手工\",\n \"content_description\": \"视频开始时，一个男孩坐在书桌前，桌上有几张彩色纸和几支彩色铅笔。随后，他拿起一把蓝色的儿童安全剪刀，开始沿着白纸上画好的轮廓小心翼翼地剪裁。\"\n}",
             "timings": {
-                "audio_extract_time": 0.18962883949279785,
-                "video_extract_time": 0.9377729892730713,
-                "send_time": 0.3654818534851074,
-                "wait_time": 8.350966930389404,
-                "total_inference_time": 8.716448783874512
+                "total_extract_time": 1.7934784889221191,
+                "audio_extract_time": 1.7934784889221191,
+                "video_extract_time": 1.7934784889221191,
+                "send_time": 0.2806112766265869,
+                "wait_time": 1.019568681716919,
+                "total_inference_time": 1.3001799583435059
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/画画1.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"思考一下再慢慢下笔\",\n \"activity_label\": \"画画\",\n \"content_description\": \"一名小女孩坐在室内，身穿一件带有花边领子的针织开衫，手里拿着一支笔，正低头看着下方的画纸或本子，似乎正在作画或写字。\",\n \"reason\": \"首先，从音频转录“思考一下再慢慢下笔”可以明确判断，该活动涉及书写或绘画。其次，视频中的女孩手持笔，并保持着专注作画或写字的姿态。综合以上信息，最匹配的活动标签是“画画”。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/做手工（情绪沮丧）.mp4",
+            "prediction": "{\n \"activity_label\": \"做手工\",\n \"content_description\": \"一名儿童正坐在餐桌前，专注于折叠一张绿色的纸张，周围散落着彩色的纸张，其中包括已经完成的纸鹤等折纸作品。他先是拿起一张绿色的纸，然后开始仔细地折叠它。\"\n}",
             "timings": {
-                "audio_extract_time": 0.1741635799407959,
-                "video_extract_time": 0.9230737686157227,
-                "send_time": 0.4026463031768799,
-                "wait_time": 8.228334665298462,
-                "total_inference_time": 8.630980968475342
+                "total_extract_time": 1.8042645454406738,
+                "audio_extract_time": 1.8042645454406738,
+                "video_extract_time": 1.8042645454406738,
+                "send_time": 0.2586085796356201,
+                "wait_time": 1.150373935699463,
+                "total_inference_time": 1.408982515335083
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/画画2.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"（音频内容为环境音，无清晰人声）\",\n \"activity_label\": \"画画\",\n \"content_description\": \"一个孩子坐在室内，正在一块画板上用铅笔画画。画的内容是一个带有拱形门的卡通风格建筑。\",\n \"reason\": \"根据音频内容，孩子没有说出任何关于做手工或过家家的词语。视频画面显示，孩子正使用铅笔在画板上进行绘画创作。因此，该活动属于“画画”。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/做手工（情绪沮丧）3.mp4",
+            "prediction": "{\n \"activity_label\": \"做手工\",\n \"content_description\": \"视频中，一个穿着围裙的小女孩坐在桌前，正在专注地将一张绿色的纸张折叠成纸鹤。她的身旁摆放着其他已经折好的彩色纸鹤，以及一张粉色、一张紫色和一张蓝色的彩色纸张，还有一把剪刀和一瓶胶水。整个过程是典型的折纸手工活动。\"\n}",
             "timings": {
-                "audio_extract_time": 0.24100756645202637,
-                "video_extract_time": 1.14491605758667,
-                "send_time": 0.3980844020843506,
-                "wait_time": 8.049126386642456,
-                "total_inference_time": 8.447210788726807
+                "total_extract_time": 1.842071294784546,
+                "audio_extract_time": 1.842071294784546,
+                "video_extract_time": 1.842071294784546,
+                "send_time": 0.2617924213409424,
+                "wait_time": 1.3374526500701904,
+                "total_inference_time": 1.5992450714111328
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/画画3.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"\",\n \"activity_label\": \"画画\",\n \"content_description\": \"一个小孩坐在桌子前，在一张白纸上用黑色的笔进行绘画。他画了一些弯曲的线条和圆形。可以听到他不时地吸鼻子的声音。\",\n \"reason\": \"根据音频转录内容，小孩正在用笔在纸上画画。虽然音频中没有明确的指令或描述，但结合核心判定标准和补充说明，做工具之类的手工活动属于做手工，而搭积木属于过家家，但本视频中没有明显的积木或过家家道具。视频画面显示的是一个典型的儿童绘画场景，因此最合适的活动标签是'画画'。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/画画（卡顿停滞）.mp4",
+            "prediction": "{\n \"activity_label\": \"画画\",\n \"content_description\": \"一个女孩坐在木桌前，她正在用一支黄色的蜡笔在一个圆形的轮廓内涂色。桌上还放着一个陶罐和几支散落的蜡笔。\"\n}",
             "timings": {
-                "audio_extract_time": 0.23994112014770508,
-                "video_extract_time": 1.95499849319458,
-                "send_time": 0.5268192291259766,
-                "wait_time": 19.597038984298706,
-                "total_inference_time": 20.123858213424683
+                "total_extract_time": 1.9423174858093262,
+                "audio_extract_time": 1.9423174858093262,
+                "video_extract_time": 1.9423174858093262,
+                "send_time": 0.2587015628814697,
+                "wait_time": 0.9323544502258301,
+                "total_inference_time": 1.1910560131072998
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/过家家1.mov",
-            "prediction": "{\n \"insideorroom\": \"室外\",\n \"voice_output\": \"你是不是在看什么？\",\n \"activity_label\": \"过家家\",\n \"content_description\": \"一个孩子在户外的地砖上，正在操作一个粉色和黄色的玩具医疗箱。玩具箱里装有听诊器等医疗道具。孩子的手正在摆弄这些玩具。\",\n \"reason\": \"根据“补充说明”，搭积木属于过家家，而使用玩具进行模拟角色扮演的活动也属于过家家。视频中的孩子正在使用一个玩具医疗箱和听诊器进行角色扮演，这完全符合“过家家”的定义。因此，尽管有玩具箱，但其主要活动是角色扮演，所以活动标签应为“过家家”。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/画画（工具损坏）.mp4",
+            "prediction": "{\n \"activity_label\": \"画画\",\n \"content_description\": \"一个小孩坐在桌子前，先用左手扶着头，右手拿着橙色的铅笔在白纸上画画。桌子上放着一盒彩色铅笔和一个橡皮擦。\"\n}",
             "timings": {
-                "audio_extract_time": 0.19742894172668457,
-                "video_extract_time": 3.779573917388916,
-                "send_time": 0.3904275894165039,
-                "wait_time": 5.929188966751099,
-                "total_inference_time": 6.3196165561676025
+                "total_extract_time": 1.4627070426940918,
+                "audio_extract_time": 1.4627070426940918,
+                "video_extract_time": 1.4627070426940918,
+                "send_time": 0.1738114356994629,
+                "wait_time": 1.005507230758667,
+                "total_inference_time": 1.1793186664581299
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/过家家2.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"我就是觉得他不想接你，因为因为之前豆包生成的PPT都那么的丑，是那种根本没法用的。然后发现现在啊现在好很多了，它整体更商务一点，就是它客户会更那个，它可以选风格嘛，可以，所有都可以调，然后就可以一键调，然后就直接网页版出现文档。对，嗯，你可以看一下，是不是挺好看的？\",\n \"activity_label\": \"过家家\",\n \"content_description\": \"在一个类似小超市或储物间的室内环境中，一名扎着双马尾的小女孩正在玩儿童过家家游戏。她面前的柜台上摆放着许多玩具食品，如玩具热狗、意大利面、水果等。小女孩手持一个粉色的玩具购物篮，篮中已装有一些商品。视频左上角有“儿童玩具”和“无危险示范”的字样，柜台上有“你好付钱”的字样，暗示这是一个模拟收银的场景。\",\n \"reason\": \"根据视频中的物品和情境判断，该活动的核心是使用一个模拟的收银台和玩具商品，这属于典型的“过家家”游戏。补充说明中明确指出“搭积木属于过家家”，而该活动也符合“过家家”的定义，即模仿成人世界的生活场景。尽管音频中提到了“PPT”和“网页版”，但这很可能是后期添加的背景音或片头，并不影响对儿童正在进行的、核心的玩乐行为的判断。小女孩正在“购物”和“付钱”的互动，是过家家游戏的典型特征。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/画画（工具缺失）.mp4",
+            "prediction": "{\n \"activity_label\": \"画画\",\n \"content_description\": \"一个扎着双马尾的小女孩正坐在桌前，她身穿深色上衣，正在用蓝色的笔在白纸上绘画。桌上还放着一团揉皱的纸巾和一个笔袋。\"\n}",
             "timings": {
-                "audio_extract_time": 0.16053438186645508,
-                "video_extract_time": 1.143869400024414,
-                "send_time": 3.2772767543792725,
-                "wait_time": 7.7546820640563965,
-                "total_inference_time": 11.031958818435669
+                "total_extract_time": 1.878002405166626,
+                "audio_extract_time": 1.878002405166626,
+                "video_extract_time": 1.878002405166626,
+                "send_time": 0.24066567420959473,
+                "wait_time": 1.096806526184082,
+                "total_inference_time": 1.3374722003936768
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/过家家3.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"嗯，好。\",\n \"activity_label\": \"过家家\",\n \"content_description\": \"一名小女孩穿着围裙，正在玩过家家游戏。她使用一个玩具熨斗和一个熨衣板，正在给一件印有大象图案的玩具衣服熨烫。她的一只手戴着红色和白色的格子布手套。旁边还放着键盘、收银机等玩具。\",\n \"reason\": \"根据核心判定标准，搭积木属于过家家。该活动的核心是使用玩具来模拟现实生活中的行为。视频中的女孩正在使用玩具熨斗和熨衣板，模拟大人熨衣服的场景。这是一种典型的角色扮演游戏，通过扮演特定角色来模仿成人世界里的活动，因此被归类为“过家家”。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/过家家（卡顿停滞）.mp4",
+            "prediction": "{\n \"activity_label\": \"过家家\",\n \"content_description\": \"视频中，一个小孩跪坐在地毯上，他面前摆放着一个用积木搭建的结构，周围散落着许多积木块。他先是低头看着这个积木结构，然后伸出右手从旁边的积木堆里拿起一块积木，准备添加到他的结构上。\"\n}",
             "timings": {
-                "audio_extract_time": 0.09239387512207031,
-                "video_extract_time": 1.1355338096618652,
-                "send_time": 0.4497392177581787,
-                "wait_time": 5.9204421043396,
-                "total_inference_time": 6.370181322097778
+                "total_extract_time": 1.973139762878418,
+                "audio_extract_time": 1.973139762878418,
+                "video_extract_time": 1.973139762878418,
+                "send_time": 0.3127748966217041,
+                "wait_time": 1.1681931018829346,
+                "total_inference_time": 1.4809679985046387
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/过家家4.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"你好我要买点电器\",\n \"activity_label\": \"过家家\",\n \"content_description\": \"视频中，一名小女孩坐在一张白色的圆桌旁。桌上放着一个红色的玩具收银机、一个玩具电话、一个彩色的积木块、一支笔和一张画。女孩正拿着笔在纸上画画。背景中有一个玩具厨房、一个玩具洗衣机和一个玩具微波炉。\",\n \"reason\": \"根据核心判定标准，该活动属于过家家。理由如下：首先，场景设置为一个模拟的商店环境，其中包括了“收银机”和“玩具电话”等典型的商店道具。其次，音频中女孩清晰地说出“你好我要买点电器”，这直接表明了她正在扮演顾客的角色，进行购物活动。这些元素共同构成了一个完整的过家家游戏场景。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/过家家（情绪沮丧_卡顿停滞）.mp4",
+            "prediction": "{\n \"activity_label\": \"过家家\",\n \"content_description\": \"一个穿着红色T恤和蓝色背带裤的小女孩正坐在木地板上。她面前有一个拼好的积木建筑，旁边放着一个装满积木的纸箱。她正在从箱子里拿出积木，并将它们添加到她正在搭建的积木结构中。\"\n}",
             "timings": {
-                "audio_extract_time": 0.25621581077575684,
-                "video_extract_time": 1.1163897514343262,
-                "send_time": 2.0806772708892822,
-                "wait_time": 9.91101622581482,
-                "total_inference_time": 11.991693496704102
+                "total_extract_time": 1.9954819679260254,
+                "audio_extract_time": 1.9954819679260254,
+                "video_extract_time": 1.9954819679260254,
+                "send_time": 0.338484525680542,
+                "wait_time": 1.1551637649536133,
+                "total_inference_time": 1.4936482906341553
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/运动1.mov",
-            "prediction": "```json{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"\",\n \"activity_label\": \"运动\",\n \"content_description\": \"一名小男孩身穿蓝色上衣和深色短裤，站在一个室内大厅里。他手持一个红黄色的拍子，正在玩一个黄色的小球。\",\n \"reason\": \"根据“核心判定标准”，活动应通过关键动作来判断。视频中的男孩正在使用球拍和球进行活动，这是一个典型的球类运动。该活动并非“做手工”或“过家家”。虽然“过家家”包括模仿，但此场景更像是一个真实的体育锻炼或游戏，因此最匹配的活动标签是“运动”。\n}\n```",
+            "video_path": "./test/考核点2：困难捕捉与反馈/过家家（操作失败）.mp4",
+            "prediction": "{\n \"activity_label\": \"过家家\",\n \"content_description\": \"一个穿着红色上衣的小女孩跪坐在地毯上，她正在用彩色的积木块堆叠一个高塔。她先将积木块一块块地放置，然后双手将最后一块积木块放在塔顶，完成了积木的搭建。\"\n}",
             "timings": {
-                "audio_extract_time": 0.1225576400756836,
-                "video_extract_time": 2.3476579189300537,
-                "send_time": 0.41211414337158203,
-                "wait_time": 2.9272236824035645,
-                "total_inference_time": 3.3393378257751465
+                "total_extract_time": 1.9055545330047607,
+                "audio_extract_time": 1.9055545330047607,
+                "video_extract_time": 1.9055545330047607,
+                "send_time": 0.22914385795593262,
+                "wait_time": 1.1216366291046143,
+                "total_inference_time": 1.3507804870605469
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/运动2.mov",
-            "prediction": "{\n \"insideorroom\": \"室内\",\n \"voice_output\": \"哦哦哦哦\",\n \"activity_label\": \"运动\",\n \"content_description\": \"一个穿着蓝色运动上衣、白色短裤和长袜的儿童正在一个纯白色的背景前，单脚站立，并用手抓住抬起的脚尖，做着一个拉伸动作。\",\n \"reason\": \"该活动的核心判定标准是“动作是否为伸展、跳跃、跑步等”。视频中的儿童正在进行一个单腿站立、用同侧手拉伸脚尖的动作，这属于典型的拉伸或热身运动。因此，该活动应归类为“运动”。\"\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/过家家（求助行为）.mp4",
+            "prediction": "{\n \"activity_label\": \"过家家\",\n \"content_description\": \"视频展示了一名小女孩正在玩娃娃。她身穿一件粉色连衣裙，外面套着黄色长袖上衣。她先是用右手拿着一个蓝色的小勺子，然后用左手扶着一个光头娃娃，把小勺子放到娃娃的嘴边，像是在给娃娃喂食。\"\n}",
             "timings": {
-                "audio_extract_time": 0.12175297737121582,
-                "video_extract_time": 1.3718769550323486,
-                "send_time": 0.33899807929992676,
-                "wait_time": 3.5196352005004883,
-                "total_inference_time": 3.858633279800415
+                "total_extract_time": 1.8913369178771973,
+                "audio_extract_time": 1.8913369178771973,
+                "video_extract_time": 1.8913369178771973,
+                "send_time": 0.27217817306518555,
+                "wait_time": 1.228248119354248,
+                "total_inference_time": 1.5004262924194336
             }
         },
         {
-            "video_path": "./test/考核点1：活动状态识别/运动3.mov",
-            "prediction": "{\n \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n \"type\": \"object\",\n \"title\": \"儿童活动分析结果\",\n \"properties\": {\n \"insideorroom\": {\n \"type\": \"string\",\n \"description\": \"判断活动发生在室内还是室外\"\n },\n \"voice_output\": {\n \"type\": \"string\",\n \"description\": \"音频转录结果\"\n },\n \"activity_label\": {\n \"type\": \"string\",\n \"description\": \"从提供的列表中选择的最匹配的活动标签。\",\n \"enum\": [\"画画\", \"做手工\", \"过家家\", \"运动\"]\n },\n \"content_description\": {\n \"type\": \"string\",\n \"description\": \"对视频中观察到的儿童活动和关键物体的客观描述（已忽略贴纸等非真实元素）。\"\n },\n \"reason\": {\n \"type\": \"string\",\n \"description\": \"结合“核心判定标准”、“补充说明”及“音频转录”内容，详细解释为什么选择该活动标签。\"\n }\n },\n \"required\": [\n \"insideorroom\",\n \"voice_output\",\n \"activity_label\",\n \"content_description\",\n \"reason\"\n ]\n}",
+            "video_path": "./test/考核点2：困难捕捉与反馈/运动（卡顿停滞）.mp4",
+            "prediction": "{\n \"activity_label\": \"运动\",\n \"content_description\": \"视频中，一个孩子正手持一根绿色的跳绳，双脚并拢，在室外的跑道上进行跳绳活动。\"\n}",
             "timings": {
-                "audio_extract_time": 0.07578039169311523,
-                "video_extract_time": 1.051769733428955,
-                "send_time": 0.3683898448944092,
-                "wait_time": 5.779158592224121,
-                "total_inference_time": 6.14754843711853
-            }
-        },
-        {
-            "video_path": "./test/考核点1：活动状态识别/运动4.mov",
-            "prediction": "{\n \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n \"type\": \"object\",\n \"title\": \"儿童活动分析结果\",\n \"properties\": {\n \"insideorroom\": {\n \"type\": \"string\",\n \"description\": \"判断活动发生在室内还是室外\"\n },\n \"voice_output\": {\n \"type\": \"string\",\n \"description\": \"音频转录结果\"\n },\n \"activity_label\": {\n \"type\": \"string\",\n \"description\": \"从提供的列表中选择的最匹配的活动标签。\",\n \"enum\": [\"画画\", \"做手工\", \"过家家\", \"运动\"]\n },\n \"content_description\": {\n \"type\": \"string\",\n \"description\": \"对视频中观察到的儿童活动和关键物体的客观描述（已忽略贴纸等非真实元素）。\"\n },\n \"reason\": {\n \"type\": \"string\",\n \"description\": \"结合“核心判定标准”、“补充说明”及“音频转录”内容，详细解释为什么选择该活动标签。\"\n }\n },\n \"required\": [\n \"insideorroom\",\n \"voice_output\",\n \"activity_label\",\n \"content_description\",\n \"reason\"\n ]\n}",
-            "timings": {
-                "audio_extract_time": 0.18325042724609375,
-                "video_extract_time": 2.264141321182251,
-                "send_time": 0.3507051467895508,
-                "wait_time": 6.21202278137207,
-                "total_inference_time": 6.562727928161621
+                "total_extract_time": 1.605466604232788,
+                "audio_extract_time": 1.605466604232788,
+                "video_extract_time": 1.605466604232788,
+                "send_time": 0.2226576805114746,
+                "wait_time": 0.7983694076538086,
+                "total_inference_time": 1.0210270881652832
             }
         }
     ],
     "timing_aggregates": {
-        "audio_extract_time": 2.447572946548462,
-        "video_extract_time": 25.189188241958618,
-        "send_time": 10.495105028152466,
-        "wait_time": 109.1233458518982,
-        "total_inference_time": 119.61845088005066
+        "audio_extract_time": 25.953365087509155,
+        "video_extract_time": 25.953365087509155,
+        "send_time": 3.6169207096099854,
+        "wait_time": 15.203535318374634,
+        "total_inference_time": 18.82045602798462
     }
 }

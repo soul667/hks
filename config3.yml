@@ -1,0 +1,38 @@
+# ------------语音识别与理解配置文件--------------------
+DASHSCOPE_API_KEY: sk-9b155a5f0d8849bdb1957500a34f644e
+
+# 音频提取配置
+audio_sample_rate: 16000  # ⚠️ 必须是 16000，这是官方标准
+audio_chunk_size: 3200    # 16000 * 0.4秒 = 6400字节（增大chunk提升稳定性）
+
+# 模型配置 - 使用最强的ASR模型
+model: qwen3-omni-flash-realtime
+url: wss://dashscope.aliyuncs.com/api-ws/v1/realtime
+transcription_model: gummy-realtime-v1  # 官方ASR转录模型
+
+# ASR 性能优化配置
+vad_threshold: 0.4  # VAD阈值(0.2-0.8)，降低可提高灵敏度，提高可减少误触发
+vad_silence_duration_ms: 10000  # 静音持续时间(200-6000ms)，检测句子结束的时长
+vad_prefix_padding_ms: 500  # 前缀填充(ms)，在检测到语音前保留的音频缓冲
+
+# 输入文件配置
+audio_path: ./test/考核点3：语音识别与语义理解/1.mp4  # 输入音频文件路径 (支持: mp4, m4a, wav, mp3)
+
+# 提示词配置 - ASR 与儿童语音理解（优化版本）
+prompt: |
+    你是一个专业的儿童语音识别与语义理解助手,将语音转录为文本
+
+# -----------------------------------------------------
+# Whisper 配置（用于 main3_whisper.py）
+whisper:
+  model_name: base  # 模型选择: tiny, base, small, medium, large
+  language: zh  # 语言: zh(中文), en(英文), 或留空自动检测
+  task: transcribe  # 任务: transcribe(转录) 或 translate(翻译成英文)
+
+# -----------------------------------------------------
+# 自动评估器配置
+evaluator:
+  enabled: true  # 是否启用评估模式
+  dataset_path: './test/考核点3：语音识别与语义理解/'  # 数据集文件夹路径
+  results_path: './eval_results_asr.json'  # 评估结果保存路径
+  supported_audio_formats: ['.mp4', '.m4a', '.wav', '.mp3', '.aac', '.flac']  # 支持的音频格式

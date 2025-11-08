@@ -11,7 +11,6 @@ import logging
 import cv2
 import time
 from io import BytesIO
-from PIL import Image
 import wave
 from dashscope.audio.qwen_omni import (
     OmniRealtimeConversation,
@@ -201,19 +200,51 @@ class VideoAudioProcessor:
     def extract_audio(self):
         """从视频中提取音频并转换为 16kHz PCM 格式
         
-        注意：音频不进行裁剪，保持完整性
+        根据 video_start_frame 和 video_end_frame_offset 裁剪音频
+        音频裁剪保持完整采样率，不进行抽帧
         """
         logger.info(f'Extracting audio from {self.video_path}...')
         import subprocess
         try:
-            # 使用 ffmpeg 将 wav 输出到 stdout，以避免在磁盘上保存临时文件（除非用户要求保存）
+            # 首先获取视频信息以计算音频裁剪时间
+            cap = cv2.VideoCapture(self.video_path)
+            original_fps = cap.get(cv2.CAP_PROP_FPS)
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            cap.release()
+            
+            # 计算裁剪时间点
+            start_frame = max(0, self.config.video_start_frame)
+            # end_frame = self.config.video_end_frame_offset
+            end_frame = 1
+            
+            
+            # 验证裁剪参数
+            if start_frame >= total_frames:
+                start_frame = 0
+            if end_frame <= start_frame:
+                start_frame = 0
+                end_frame = total_frames
+            
+            # 计算音频裁剪的时间点（秒）
+            start_time = start_frame / original_fps if original_fps > 0 else 0
+            end_time = end_frame / original_fps if original_fps > 0 else 0
+            duration = end_time - start_time
+            
+            # 构建 ffmpeg 命令，包含音频裁剪参数
+            # 优化性能：-ss 在 -i 之前，直接跳转到指定位置，避免解码整个文件
             cmd = [
-                'ffmpeg', '-i', self.video_path,
+                'ffmpeg',
+                '-loglevel', 'error',  # 减少日志输出
+                '-ss', str(start_time),  # 起始时间（放在 -i 之前以提升速度）
+                '-t', str(duration),  # 持续时间
+                '-i', self.video_path,
                 '-vn',  # 不处理视频
                 '-acodec', 'pcm_s16le',  # PCM 16-bit
                 '-ar', str(self.config.audio_sample_rate),  # 采样率
                 '-ac', '1',  # 单声道
-                '-f', 'wav', '-'  # 输出到 stdout
+                '-f', 'wav',
+                '-threads', '0',  # 使用所有可用线程
+                '-'  # 输出到 stdout
             ]
 
             proc = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -223,7 +254,11 @@ class VideoAudioProcessor:
             with wave.open(BytesIO(audio_bytes), 'rb') as wf:
                 self.audio_data = wf.readframes(wf.getnframes())
 
-            logger.info(f'Audio extracted: {len(self.audio_data)} bytes (完整音频，未裁剪, in-memory)')
+            logger.info(f'Audio extracted: {len(self.audio_data)} bytes')
+            if start_frame > 0 or self.config.video_end_frame_offset < total_frames:
+                logger.info(f'音频已裁剪: {start_time:.2f}s - {end_time:.2f}s (时长 {duration:.2f}s, 完整采样率)')
+            else:
+                logger.info(f'完整音频 (时长 {duration:.2f}s, 完整采样率)')
 
             # 如果配置要求，保存 wav 文件以便后续比对
             try:
@@ -318,36 +353,57 @@ class VideoAudioProcessor:
         frame_count = 0
         extracted_count = 0
         
-        while True:
+        # 优化：预计算需要的帧索引，避免重复计算
+        target_frames = set()
+        for i in range(start_frame, end_frame, frame_interval):
+            target_frames.add(i)
+        
+        # 优化：如果裁剪起始帧大于0，直接跳转到起始位置
+        if start_frame > 0:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+            frame_count = start_frame
+        
+        # 预先计算缩放参数（避免每帧都计算）
+        ret, first_frame = self.cap.read()
+        if not ret:
+            logger.error("无法读取视频第一帧")
+            return self.video_frames
+        
+        h, w = first_frame.shape[:2]
+        need_resize = w > self.config.video_max_width
+        if need_resize:
+            ratio = self.config.video_max_width / w
+            new_w = self.config.video_max_width
+            new_h = int(h * ratio)
+        
+        # JPEG编码参数（只定义一次）
+        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
+        
+        # 处理第一帧（如果需要）
+        if frame_count in target_frames:
+            if need_resize:
+                first_frame = cv2.resize(first_frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
+            _, buffer = cv2.imencode('.jpg', first_frame, encode_param)
+            frame_b64 = base64.b64encode(buffer).decode('ascii')
+            self.video_frames.append(frame_b64)
+            extracted_count += 1
+        
+        frame_count += 1
+        
+        while frame_count < end_frame:
             ret, frame = self.cap.read()
             if not ret:
                 break
             
-            # 检查是否在裁剪范围内
-            if frame_count < start_frame:
-                frame_count += 1
-                continue
-            if frame_count >= end_frame:
-                break
-            
-            # 计算相对于裁剪起始位置的帧索引
-            relative_frame = frame_count - start_frame
-            
-            if relative_frame % frame_interval == 0:
+            # 只处理目标帧
+            if frame_count in target_frames:
                 # 调整帧大小
-                h, w = frame.shape[:2]
-                if w > self.config.video_max_width:
-                    ratio = self.config.video_max_width / w
-                    new_w = self.config.video_max_width
-                    new_h = int(h * ratio)
-                    frame = cv2.resize(frame, (new_w, new_h))
+                if need_resize:
+                    frame = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
                 
-                # 转换为 JPEG 格式
-                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                img = Image.fromarray(frame_rgb)
-                buffer = BytesIO()
-                img.save(buffer, format='JPEG', quality=85)
-                frame_b64 = base64.b64encode(buffer.getvalue()).decode('ascii')
+                # JPEG编码并转base64
+                _, buffer = cv2.imencode('.jpg', frame, encode_param)
+                frame_b64 = base64.b64encode(buffer).decode('ascii')
                 
                 self.video_frames.append(frame_b64)
                 extracted_count += 1
@@ -488,7 +544,7 @@ class MyCallback(OmniRealtimeCallback):
                                     continue
                                 candidate = cleaned[opens[i]:closes[j]+1]
                                 try:
-                                    obj = json.loads(candidate)
+                                    json.loads(candidate)  # 验证JSON有效性
                                     return candidate
                                 except Exception:
                                     continue
@@ -537,6 +593,7 @@ def extract_and_process_video(video_path, config):
     """
     第一个函数：特征提取函数。
     负责提取指定视频的音频和视频帧。
+    优化：使用并行处理同时提取音频和视频
     """
     logger.info(f"\n[特征提取] 开始处理: {video_path}")
     
@@ -546,18 +603,55 @@ def extract_and_process_video(video_path, config):
 
     processor = VideoAudioProcessor(config=temp_config)
     timings = {}
+    
     try:
+        # 使用多线程并行提取音频和视频
+        audio_data = None
+        video_frames = None
+        audio_error = None
+        video_error = None
+        
+        def extract_audio_thread():
+            nonlocal audio_data, audio_error
+            try:
+                audio_data = processor.extract_audio()
+            except Exception as e:
+                audio_error = e
+        
+        def extract_video_thread():
+            nonlocal video_frames, video_error
+            try:
+                video_frames = processor.extract_video_frames()
+            except Exception as e:
+                video_error = e
+        
         t0 = time.time()
-        audio_data = processor.extract_audio()
+        
+        # 创建并启动两个线程
+        audio_thread = threading.Thread(target=extract_audio_thread)
+        video_thread = threading.Thread(target=extract_video_thread)
+        
+        audio_thread.start()
+        video_thread.start()
+        
+        # 等待两个线程完成
+        audio_thread.join()
+        video_thread.join()
+        
         t1 = time.time()
-        video_frames = processor.extract_video_frames()
-        t2 = time.time()
-
-        timings['audio_extract_time'] = t1 - t0
-        timings['video_extract_time'] = t2 - t1
+        
+        # 检查是否有错误
+        if audio_error:
+            raise audio_error
+        if video_error:
+            raise video_error
+        
+        timings['total_extract_time'] = t1 - t0
+        timings['audio_extract_time'] = timings['total_extract_time']  # 并行所以记录总时间
+        timings['video_extract_time'] = timings['total_extract_time']
 
         logger.info(f"✓ [特征提取] 完成: {os.path.basename(video_path)} -> {len(video_frames)} 帧, {len(audio_data)} 字节音频")
-        logger.info(f"  - 音频提取耗时: {timings['audio_extract_time']:.3f}s, 视频帧提取耗时: {timings['video_extract_time']:.3f}s")
+        logger.info(f"  - 并行提取总耗时: {timings['total_extract_time']:.3f}s (音频+视频同时进行)")
         return processor, audio_data, video_frames, timings
     except Exception as e:
         logger.error(f"✗ [特征提取] 失败: {video_path}, 原因: {e}")
@@ -645,11 +739,11 @@ def run_inference(processor, audio_data, video_frames, config):
                 b64_player = None
 
                 if attempt < max_attempts:
-                    logger.info(f"[模型推理] 将在 1 秒后重试...")
+                    logger.info("[模型推理] 将在 1 秒后重试...")
                     time.sleep(1.0)  # 增加等待时间到1秒
                     continue
                 else:
-                    logger.error(f"[模型推理] 已达到最大重试次数，放弃")
+                    logger.error("[模型推理] 已达到最大重试次数，放弃")
                     return None, {
                         'send_time': t_send_end - t_send_start,
                         'wait_time': t_wait_end - t_wait_start,
@@ -685,7 +779,7 @@ def run_inference(processor, audio_data, video_frames, config):
                 time.sleep(1.0)
                 continue
             
-            logger.error(f"[模型推理] 已达到最大重试次数，放弃")
+            logger.error("[模型推理] 已达到最大重试次数，放弃")
             return None, {}
 
 
@@ -714,8 +808,14 @@ def evaluate_results(results, config):
 
         # 从文件名提取真值标签
         filename = os.path.basename(video_path)
-        # 移除扩展名和可能的数字后缀
-        true_label = ''.join(filter(str.isalpha, os.path.splitext(filename)[0]))
+        true_labels=("画画", "做手工", "过家家", "运动")
+        true_label=""
+        for label in true_labels:
+            if label in filename:
+                true_label = label
+                break
+        # # 移除扩展名和可能的数字后缀
+        # true_label = ''.join(filter(str.isalpha, os.path.splitext(filename)[0]))
 
         # 初始化 class_stats
         if true_label not in class_stats:
@@ -892,15 +992,50 @@ def run_single_video(config):
     logger.info('\n[2/6] 提取视频和音频...')
     video_processor = VideoAudioProcessor(config=config)
     
-    # 提取音频和视频帧 (计时)
+    # 提取音频和视频帧 (计时) - 使用并行处理
     try:
+        audio_data = None
+        video_frames = None
+        audio_error = None
+        video_error = None
+        
+        def extract_audio_thread():
+            nonlocal audio_data, audio_error
+            try:
+                audio_data = video_processor.extract_audio()
+            except Exception as e:
+                audio_error = e
+        
+        def extract_video_thread():
+            nonlocal video_frames, video_error
+            try:
+                video_frames = video_processor.extract_video_frames()
+            except Exception as e:
+                video_error = e
+        
         t0 = time.time()
-        audio_data = video_processor.extract_audio()
+        
+        # 创建并启动两个线程并行提取
+        audio_thread = threading.Thread(target=extract_audio_thread)
+        video_thread = threading.Thread(target=extract_video_thread)
+        
+        audio_thread.start()
+        video_thread.start()
+        
+        # 等待两个线程完成
+        audio_thread.join()
+        video_thread.join()
+        
         t1 = time.time()
-        video_frames = video_processor.extract_video_frames()
-        t2 = time.time()
+        
+        # 检查是否有错误
+        if audio_error:
+            raise audio_error
+        if video_error:
+            raise video_error
+        
         logger.info(f'✓ 提取完成: {len(video_frames)} 帧, {len(audio_data)} 字节音频')
-        logger.info(f'  - 音频提取耗时: {(t1-t0):.3f}s, 视频帧提取耗时: {(t2-t1):.3f}s')
+        logger.info(f'  - 并行提取总耗时: {(t1-t0):.3f}s (音频+视频同时进行)')
     except Exception as e:
         logger.error(f'✗ 提取失败: {e}')
         import traceback

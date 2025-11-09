@@ -8,7 +8,7 @@ chunk_size_ms: 100  # 推荐 100ms，平衡延迟和流畅度
 
 # 音频提取配置
 audio_sample_rate: 16000  # ⚠️ 必须是 16000，这是官方标准
-audio_chunk_size: 6400     # 保持不变（16000 * 0.2秒 = 3200）
+audio_chunk_size: 1600     # 保持不变（16000 * 0.2秒 = 3200）
 
 # # 视频提取配置
 # video_fps: 5  # 帧率配置 (支持两种格式):
@@ -26,13 +26,13 @@ audio_chunk_size: 6400     # 保持不变（16000 * 0.2秒 = 3200）
 # TEST的配置
 
 # 视频提取配置
-video_fps: 5  # 帧率配置 (支持两种格式):
+video_fps: 3  # 帧率配置 (支持两种格式):
               # - >= 1: 表示每秒提取几帧 (如 1=每秒1帧, 2=每秒2帧, 5=每秒5帧)
               # - < 1: 表示帧率倒数 (如 0.5=每2秒1帧, 0.333=每3秒1帧, 0.2=每5秒1帧)
               # 建议值: 1 (每秒1帧) 或 0.5 (每2秒1帧)
               # 注意: 帧数越多,处理时间越长,成本越高
 video_max_width: 720  # 视频帧最大宽度(像素), 自动等比例缩放
-video_start_frame: 0  # 从第几帧开始裁剪 (0表示从开头, 30表示跳过前30帧)
+video_start_frame: 1  # 从第几帧开始裁剪 (0表示从开头, 30表示跳过前30帧)
                       # ⚠️ 注意：此参数仅影响视频帧，音频保持完整不裁剪
 video_end_frame_offset: 600  # 从结尾倒数第几帧结束 (0表示到结尾, 30表示忽略最后30帧)
                            # ⚠️ 注意：此参数仅影响视频帧，音频保持完整不裁剪
@@ -40,6 +40,7 @@ video_end_frame_offset: 600  # 从结尾倒数第几帧结束 (0表示到结尾,
 # 模型配置
 model: qwen3-omni-flash-realtime
 url: wss://dashscope.aliyuncs.com/api-ws/v1/realtime
+
 transcription_model: gummy-realtime-v1
 
 # 输入文件配置
@@ -52,36 +53,101 @@ transcription_model: gummy-realtime-v1
 
       # 做工具之类的手工活动属于做手工
     # 3. 特殊提示
-prompt: |
-    ## 1. 角色
-    你是一个专业的儿童活动分析专家。
+# prompt: |
+#     ## 1. 角色
+#     你是一个专业的儿童活动分析专家。
 
-    ## 2. 任务 
-    你的任务是分析我稍后提供的视频（或视频描述），并根据下方的“核心判定标准”和“补充说明”，输出对该活动的分析
-    > 积木搭建不属于“手工”，请归类为“过家家”。
+#     ## 2. 任务 
+#     你的任务是分析我稍后提供的视频（或视频描述），并根据下方的“核心判定标准”和“补充说明”，输出对该活动的分析
     
-    ## 3. 输出格式 
-    你必须严格按照以下JSON Schema格式返回你的分析结果。不要包含任何JSON Schema之外的解释性文字。
+#     ## 3. 输出格式 
+#     你必须严格按照以下JSON Schema格式返回你的分析结果。不要包含任何JSON Schema之外的解释性文字。
 
-    ```json
-    {
-      "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",
+#     ```json
+#     {
+#       "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",
+#       "type": "object",
+#       "title": "儿童活动分析结果",
+#       "properties": {
+#           "activity_label": {
+#             "type": "string",
+#             "description": "从提供的列表中选择的最匹配的活动标签。",
+#             "enum": ["画画", "做手工", "过家家", "运动"]
+#           },
+#           "content_description": {
+#             "type": "string",
+#             "description": "对视频中观察到的儿童活动和关键物体的客观描述（要求必须包含时序信息，比如先干什么，再干什么）。"
+#           }
+#       },
+#       "required": [
+#         "activity_label",
+#         "content_description"
+#       ]
+#     }
+
+
+prompt: |
+    1. 角色
+    你是一个专业的儿童活动分析专家及困难识别、安抚引导专家。
+
+    2. 任务
+    你的任务是识别所有独立困难事件和儿童的情绪困扰，然后给予温柔的安抚以及建设性的引导。并根据下方的“核心判定标准”进行分析。 
+
+    3. 输出格式
+    你必须严格按照以下JSON Schema格式返回你的分析结果。
+
+    JSON
+
+    { 
+      "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "title": "儿童活动分析结果",
       "properties": {
-          "activity_label": {
-            "type": "string",
-            "description": "从提供的列表中选择的最匹配的活动标签。",
-            "enum": ["画画", "做手工", "过家家", "运动"]
-          },
-          "content_description": {
-            "type": "string",
-            "description": "对视频中观察到的儿童活动和关键物体的客观描述（要求必须包含时序信息，比如先干什么，再干什么）。"
+        "voice_output": {
+          "type": "string",
+          "description": "音频转录结果"
+        },
+        "content_description": {  
+          "type": "string",
+          "description": "对视频中观察到的儿童活动和关键物体的客观描述。"
+        },
+        "difficulty_events": {
+          "type": "array",
+          "description": "视频中检测到的所有遇到困难的独立事件列表。按时间顺序排列，并为每个事件指定精确的时间范围。",
+          "items": {
+            "type": "object",
+            "properties": {
+              "difficulty_label": {
+                "type": "string",
+                "description": "最匹配的困难标签。",
+                "enum": ["工具/材料缺失", "操作失败", "卡顿停滞", "情绪沮丧", "求助行为"]
+              },
+              "difficulty_description": {
+                "type": "string",
+                "description": "对该困难事件的客观描述（仅描述该事件过程）。"
+              },
+              "calm_guide": {
+                "type": "string",
+                "description": "针对该困难事件的主观安抚并客观引导。"
+              }
+            },
+            "required": [
+              "difficulty_label",
+              "difficulty_description",
+              "calm_guide"
+            ]
           }
+        },
+        "reason": {
+          "type": "string",
+          "description": "结合“核心判定标准”及“音频转录”内容，详细解释整体的活动标签判定，并简述困难事件标签的依据。"
+        }
       },
       "required": [
-        "activity_label",
-        "content_description"
+        "voice_output",
+        "content_description",
+        "difficulty_events",
+        "reason"
       ]
     }
 # -----------------------------------------------------
@@ -90,7 +156,7 @@ prompt: |
 # video_path: "./test/考核点1：活动状态识别/画画3.mov"
 # video_path: "./test/考核点1：活动状态识别/画画4.mov"
 
-# video_path: ./test/考核点1：活动状态识别/运动3.mov
+video_path: ./test/考核点2：困难捕捉与反馈/运动（卡顿停滞）.mp4
 # video_path: "./test/考核点1：活动状态识别/做手工4.mov"
 
 # -----------------------------------------------------
@@ -102,7 +168,7 @@ prompt: |
           # }
         # "reason"
 evaluator:
-  enabled: true  # 是否启用评估模式
+  enabled: false  # 是否启用评估模式
   # dataset_path: './test/考核点1：活动状态识别/' # 数据集文件夹路径
   dataset_path: './test/考核点2：困难捕捉与反馈/' # 数据集文件夹路径
 
@@ -123,3 +189,38 @@ evaluator:
     # * **4. “手工”的地点限制 (重要)**
     #     * **“手工” (Handicraft) 判定标准的第一条就是“必须在室内”且“在桌子上”。**
     #     * 如果活动发生在 **室外**，**无论** 儿童是否在使用工具，都 **绝不能** 归类为 "手工"。
+
+
+
+    # prompt: |
+    # ## 1. 角色
+    # 你是一个专业的儿童活动分析专家。
+
+    # ## 2. 任务 
+    # 你的任务是分析我稍后提供的视频（或视频描述），并根据下方的“核心判定标准”和“补充说明”，输出对该活动的分析
+    # > 积木搭建不属于“手工”，请归类为“过家家”。
+    
+    # ## 3. 输出格式 
+    # 你必须严格按照以下JSON Schema格式返回你的分析结果。不要包含任何JSON Schema之外的解释性文字。
+
+    # ```json
+    # {
+    #   "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",
+    #   "type": "object",
+    #   "title": "儿童活动分析结果",
+    #   "properties": {
+    #       "activity_label": {
+    #         "type": "string",
+    #         "description": "从提供的列表中选择的最匹配的活动标签。",
+    #         "enum": ["画画", "做手工", "过家家", "运动"]
+    #       },
+    #       "content_description": {
+    #         "type": "string",
+    #         "description": "对视频中观察到的儿童活动和关键物体的客观描述（要求必须包含时序信息，比如先干什么，再干什么）。"
+    #       }
+    #   },
+    #   "required": [
+    #     "activity_label",
+    #     "content_description"
+    #   ]
+    # }

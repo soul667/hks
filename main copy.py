@@ -43,7 +43,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__) 
-# 新加坡和北京地域的API Key不同。获取API Key：c
+# 新加坡和北京地域的API Key不同。获取API Key：https://www.alibabacloud.com/help/zh/model-studio/get-api-key
 
 # 主函数配置的类
 
@@ -214,8 +214,8 @@ class VideoAudioProcessor:
             
             # 计算裁剪时间点
             start_frame = max(0, self.config.video_start_frame)
-            end_frame = self.config.video_end_frame_offset
-            # end_frame = 1
+            # end_frame = self.config.video_end_frame_offset
+            end_frame = 1
             
             
             # 验证裁剪参数

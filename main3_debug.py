@@ -45,7 +45,7 @@ class Config:
     vad_prefix_padding_ms: int = 200
     audio_path: str = ''
     prompt: str = '请识别音频内容'
-    
+
     def __post_init__(self):
         with open(self.config_path, 'r', encoding='utf-8') as yml_file:
             params = yaml.load(yml_file, Loader=yaml.FullLoader)

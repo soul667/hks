@@ -441,15 +441,7 @@ class MyCallback(OmniRealtimeCallback):
     
     def on_open(self) -> None:
         global b64_player
-        logger.info('✓ Connection opened, initializing audio player...')
-        pya = pyaudio.PyAudio()
-        b64_player = B64PCMPlayer(
-            pya=pya,
-            sample_rate=self.config.sample_rate,
-            chunk_size_ms=self.config.chunk_size_ms
-        )
-        self.b64_player = b64_player
-        logger.info('✓ Audio player initialized\n')
+        logger.info('✓ Connection opened (text-only mode, no audio player)\n')
     
     def on_close(self, close_status_code, close_msg) -> None:
         logger.info('\n[Connection Closed] Code: {}, Message: {}'.format(
@@ -519,10 +511,8 @@ class MyCallback(OmniRealtimeCallback):
                 print()  # 换行
                 
             elif event_type == 'response.audio.delta':
-                # 接收音频数据
-                recv_audio_b64 = response['delta']
-                if b64_player:
-                    b64_player.add_data(recv_audio_b64)
+                # 忽略音频数据 (文本模式)
+                pass
                     
             elif event_type == 'response.done':
                 logger.info('\n' + '=' * 60)
@@ -1054,7 +1044,7 @@ def run_single_video(config):
     logger.info('[4/6] 连接到服务器...')
     conversation.connect()
     conversation.update_session(
-        output_modalities=[MultiModality.AUDIO, MultiModality.TEXT],  # 输出音频和文本
+        output_modalities=[MultiModality.TEXT],  # 只输出文本,不输出音频
         voice=config.voice,
         input_audio_format=AudioFormat.PCM_16000HZ_MONO_16BIT,
         output_audio_format=AudioFormat.PCM_24000HZ_MONO_16BIT,
@@ -1111,7 +1101,7 @@ def run_single_video(config):
         conversation.commit()
         conversation.create_response(
             instructions=config.prompt,
-            output_modalities=[MultiModality.AUDIO, MultiModality.TEXT]
+            output_modalities=[MultiModality.TEXT]  # 只输出文本
         )
 
         logger.info('\n等待 AI 响应...\n')
@@ -1119,14 +1109,10 @@ def run_single_video(config):
         callback.response_complete_event.wait(timeout=120)
         t_wait_b = time.time()
 
-        logger.info('\n处理完成! 按 Ctrl+C 退出或等待音频播放完成...')
+        logger.info('\n处理完成!')
         logger.info(f"  - 发送音频耗时: {(t_send_b - t_send_a):.3f}s")
         logger.info(f"  - 发送视频耗时: {(t_send_c - t_send_b):.3f}s")
         logger.info(f"  - 等待响应耗时: {(t_wait_b - t_wait_a):.3f}s")
-
-        # 等待音频播放完成
-        if b64_player:
-            b64_player.wait_for_complete()
         
     except Exception as e:
         logger.error(f'\n✗ 处理错误: {e}')
@@ -1135,8 +1121,6 @@ def run_single_video(config):
     finally:
         if conversation:
             conversation.close()
-        if b64_player:
-            b64_player.shutdown()
         if video_processor:
             video_processor.cleanup()
         logger.info('\n程序结束.')

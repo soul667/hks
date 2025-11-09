@@ -1,0 +1,56 @@
+
+    {
+      "$schema": "[http://json-schema.org/draft-07/schema#](http://json-schema.org/draft-07/schema#)",
+      "type": "object",
+      "title": "儿童活动时间日志 (Activity Log)",
+      "description": "一份详细描述视频中所有事件的、按时间排序的客观日志，用于下游Agent进行分析。（总时长10s）",
+      "properties": {
+        "video_summary": {
+          "type": "string",
+          "description": "对视频中观察到的儿童活动、环境和关键物体的**整体**客观描述（例如：'一个孩子坐在桌前玩积木'）。"
+        },
+        "activity_log": {
+          "type": "array",
+          "description": "按时间顺序排列的、详细的、连续的活动片段日志列表。(每个列表中应该有详细的时序顺序)",
+          "items": {
+            "type": "object",
+            "title": "时间片段",
+            "properties": {
+              "start_time": {
+                "type": "string",
+                "description": "该活动片段的开始时间 (格式: 'HH:MM:SS.mmm' 或 'SS.mmm's)"
+              },
+              "end_time": {
+                "type": "string",
+                "description": "该活动片段的结束时间 (格式: 'HH:MM:SS.mmm' 或 'SS.mmm's)"
+              },
+              "action_description": {
+                "type": "string",
+                "description": "客观描述儿童在该时间段内的**主要动作**或**行为**。例如：'右手拿起蓝色积木'，'身体前倾'，'头部转向左侧'。"
+              },
+              "expression_description": {
+                "type": "string",
+                "description": "客观描述儿童的**面部表情**或**关键肢体语言**。例如：'皱眉'，'嘴巴张开'，'低头'，'双手握拳'，'叹气'。"
+              },
+              "speech_or_sound": {
+                "type": "string",
+                "description": "儿童在该时间段内说的**具体话语**或发出的**非语言声音**。例如：'这个好难'，'嗯...'，'（哭泣声）'，'（积木碰撞声）'。"
+              },
+              "object_interaction": {
+                "type": "string",
+                "description": "描述儿童与**关键物体**的精确交互。例如：'积木掉落到地板'，'尝试将A插入B失败'，'双手反复旋转一个圆形零件'。"
+              }
+            },
+            "required": [
+              "start_time",
+              "end_time",
+              "action_description",
+              "expression_description",
+              "speech_or_sound",
+              "object_interaction"
+            ]
+          }
+        }
+      },
+      "required": ["video_summary", "activity_log"]
+    }

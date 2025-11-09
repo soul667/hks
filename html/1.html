@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON 反馈查看器</title>
+    <style>
+        /* --- 基本样式 --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- 拖放区域 --- */
+        #drop-zone {
+            border: 3px dashed #c0c0c0;
+            border-radius: 12px;
+            padding: 60px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #ffffff;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        #drop-zone.dragover {
+            background-color: #e8f0fe;
+            border-color: #4a90e2;
+        }
+
+        #drop-zone p {
+            font-size: 1.2em;
+            color: #555;
+            margin: 0 0 15px 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #reset-button {
+            display: none; /* 初始隐藏 */
+            margin-bottom: 20px;
+            background-color: #d9534f;
+        }
+
+        #reset-button:hover {
+            background-color: #c9302c;
+        }
+
+        #drop-zone .button:hover {
+            background-color: #357ebd;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* --- 统计概览 --- */
+        #summary-stats {
+            display: none; /* 初始隐藏 */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        #summary-stats h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .stat-item strong {
+            display: block;
+            font-size: 1.5em;
+            color: #4a90e2;
+        }
+        
+        .stat-item .accuracy-zero {
+            color: #d9534f;
+        }
+
+        .stat-item span {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .per-class-list {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        /* --- 结果卡片 --- */
+        #results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .result-card {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .result-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            background-color: #fcfcfc;
+            border-bottom: 1px solid #eee;
+        }
+
+        .video-path {
+            font-size: 0.85em;
+            color: #555;
+            word-break: break-all;
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: 15px 20px;
+        }
+
+        /* 这是关键的 "最终反馈" */
+        .final-guide {
+            background-color: #e8f0fe;
+            border-left: 5px solid #4a90e2;
+            padding: 15px;
+            margin: 0 0 20px 0;
+            font-size: 1.1em;
+            font-style: italic;
+            color: #2c5784;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .card-section-title {
+            font-weight: bold;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1em;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 5px;
+        }
+        
+        .content-desc {
+            font-size: 0.95em;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .difficulty-event {
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #fdfdfd;
+        }
+        
+        .difficulty-label {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .difficulty-desc {
+            font-size: 0.9em;
+            margin: 0;
+            color: #555;
+        }
+        
+        .timings {
+            font-size: 0.8em;
+            color: #888;
+            padding: 10px 20px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+            margin: 0;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <button id="reset-button" class="button" onclick="resetView()">加载新文件</button>
+
+        <div id="drop-zone">
+            <input type="file" id="file-input" accept="application/json">
+            <p>将您的 JSON 结果文件拖放到此处</p>
+            <p>- 或 -</p>
+            <button class="button" onclick="document.getElementById('file-input').click()">选择文件</button>
+        </div>
+
+        <div id="summary-stats"></div>
+        <div id="results-container"></div>
+
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const summaryContainer = document.getElementById('summary-stats');
+        const resultsContainer = document.getElementById('results-container');
+        const resetButton = document.getElementById('reset-button');
+
+        // --- 事件监听 ---
+
+        // 拖放区域
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length) {
+                const file = e.dataTransfer.files[0];
+                if (file.type === 'application/json') {
+                    processFile(file);
+                } else {
+                    alert('文件无效，请上传 .json 文件。');
+                }
+            }
+        });
+
+        // 文件选择按钮
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                processFile(e.target.files[0]);
+            }
+        });
+
+        // --- 核心功能 ---
+
+        function processFile(file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    displayData(jsonData);
+                } catch (err) {
+                    alert('解析JSON失败，请检查文件格式。\n错误: ' + err.message);
+                }
+            };
+
+            reader.onerror = () => {
+                alert('读取文件失败。');
+            };
+
+            reader.readAsText(file);
+        }
+
+        function displayData(data) {
+            // 切换视图
+            dropZone.style.display = 'none';
+            resetButton.style.display = 'inline-block';
+            summaryContainer.style.display = 'block';
+
+            // 1. 渲染统计概览
+            renderSummary(data);
+
+            // 2. 渲染结果卡片
+            renderResults(data.results);
+        }
+        
+        function resetView() {
+            // 切换视图
+            dropZone.style.display = 'block';
+            resetButton.style.display = 'none';
+            summaryContainer.style.display = 'none';
+            
+            // 清空内容
+            summaryContainer.innerHTML = '';
+            resultsContainer.innerHTML = '';
+            fileInput.value = null; // 重置文件输入
+        }
+
+        function renderSummary(data) {
+            let perClassHtml = '<ul class="per-class-list">';
+            for (const [key, value] of Object.entries(data.per_class)) {
+                const className = key === "" ? "未分类" : key;
+                perClassHtml += `<li>
+                    ${className}: ${value.correct} / ${value.total} (准确率: ${(value.accuracy * 100).toFixed(1)}%)
+                </li>`;
+            }
+            perClassHtml += '</ul>';
+
+            summaryContainer.innerHTML = `
+                <h2>结果概览</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <strong class="${data.accuracy === 0 ? 'accuracy-zero' : ''}">${(data.accuracy * 100).toFixed(1)}%</strong>
+                        <span>总体准确率</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>${data.correct_predictions} / ${data.total_files}</strong>
+                        <span>正确 / 总数</span>
+                    </div>
+                    <div class="stat-item" style="grid-column: 1 / -1;">
+                        <span>按类别统计</span>
+                        ${perClassHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderResults(results) {
+            resultsContainer.innerHTML = ''; // 清空旧结果
+
+            results.forEach(result => {
+                let predictionData;
+                
+                try {
+                    // 清理 prediction 字符串中的 markdown 标记
+                    const cleanPredictionString = result.prediction.replace(/^```json\n|```$/g, '');
+                    predictionData = JSON.parse(cleanPredictionString);
+                } catch (e) {
+                    console.error('解析内嵌JSON失败:', e, result.prediction);
+                    predictionData = {
+                        final_guide: "错误：解析内嵌JSON失败。",
+                        content_description: "无法加载数据。",
+                        difficulty_events: []
+                    };
+                }
+
+                // 创建困难事件的HTML
+                let difficultiesHtml = '';
+                if (predictionData.difficulty_events && predictionData.difficulty_events.length > 0) {
+                    difficultiesHtml = '<h4 class="card-section-title">识别到的困难事件</h4>';
+                    predictionData.difficulty_events.forEach(event => {
+                        const labelInfo = getLabelStyle(event.difficulty_label);
+                        difficultiesHtml += `
+                            <div class="difficulty-event">
+                                <span class="difficulty-label" style="background-color: ${labelInfo.color};">
+                                    ${labelInfo.text}
+                                </span>
+                                <p class="difficulty-desc">${event.difficulty_description}</p>
+                            </div>
+                        `;
+                    });
+                } else {
+                     difficultiesHtml = '<h4 class="card-section-title">未识别到困难事件</h4>';
+                }
+                
+                // 创建卡片
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="video-path">${result.video_path}</h3>
+                    </div>
+                    <div class="card-body">
+                        <blockquote class="final-guide">
+                            ${predictionData.final_guide || "未提供最终反馈。"}
+                        </blockquote>
+                        
+                        <h4 class="card-section-title">内容描述</h4>
+                        <p class="content-desc">${predictionData.content_description || "N/A"}</p>
+                        
+                        ${difficultiesHtml}
+                    </div>
+                    <p class="timings">
+                        总耗时: ${result.timings.total_time.toFixed(2)}s
+                    </p>
+                `;
+                
+                resultsContainer.appendChild(card);
+            });
+        }
+        
+        // 辅助函数：为困难标签提供颜色和正确文本
+        function getLabelStyle(label) {
+            // 处理您JSON中的拼写错误 "情绪沮sa丧"
+            if (label.includes("沮丧")) {
+                return { text: "情绪沮丧", color: "#d9534f" };
+            }
+            switch (label) {
+                case "操作失败":
+                    return { text: "操作失败", color: "#f0ad4e" };
+                case "卡顿停滞":
+                    return { text: "卡顿停滞", color: "#5bc0de" };
+                case "工具/材料缺失":
+                    return { text: "工具缺失", color: "#777" };
+                case "求助行为":
+                    return { text: "求助行为", color: "#337ab7" };
+                default:
+                    return { text: label, color: "#9b59b6" };
+            }
+        }
+    </script>
+</body>
+</html>

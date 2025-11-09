@@ -1,0 +1,101 @@
+# ------------Gemini 2.5 视频理解配置文件--------------------
+
+# Gemini API Key (从 Google AI Studio 获取: https://ai.google.dev/)
+GEMINI_API_KEY: "sk-hOO6SgLjuaICJmdf5JLfwVRfz3Z7w9sHnDGDWGWvcY3bRWdZ"
+# GEMINI_API_KEY: "sk-hOO6SgLjuaICJmdf5JLfwVRfz3Z7w9sHnDGDWGWvcY3bRWdZ"
+
+# API 端点配置 (使用代理服务时需要设置)
+# 方式1: 使用 Google 官方 API (默认)
+# api_base_url: null
+# api_endpoint: "/models/gemini-2.5-flash:generateContent"
+
+# 方式2: 使用代理服务
+api_base_url: "https://jeniya.cn"  # 替换为你的代理服务地址
+api_endpoint: "/v1beta/models/gemini-2.0-flash:generateContent"  # 代理 API 路径
+
+# SSL 配置 (用于代理服务)
+verify_ssl: false  # true=验证SSL证书, false=跳过SSL验证(用于代理服务)
+                   # ⚠️ 警告: 设置为false会降低安全性,仅在必要时使用
+
+# 模型选择
+  # 可选: gemini-2.5-flash (更快更便宜), gemini-2.5-pro (更强大)
+model: gemini-2.5-flash-lite-preview-06-17-nothinking
+# model: gemini-2.5-pro
+
+
+
+# model: gemini-3-pro-preview-11-2025  # 可选: gemini-2.5-flash (更快更便宜), gemini-2.5-pro (更强大)
+                         # ⚠️ 注意: 使用代理时，确保 api_endpoint 中的模型名称正确
+
+# 视频处理配置
+use_file_api: false  # true=使用File API上传(推荐>20MB或>1分钟), false=内嵌方式(<20MB)
+video_fps: 3  # 自定义帧速率 (null=默认1 FPS, 可设置如 5 表示每秒5帧)
+video_start_offset: null  # 视频开始时间 (如 "10s", "1250s", null=从头开始)
+video_end_offset: null   # 视频结束时间 (如 "1570s", null=到结尾)
+media_resolution: default  # default=标准分辨率, low=低分辨率(节省token)
+
+# YouTube 支持 (预览功能)
+support_youtube: false  # true=支持YouTube URL, false=仅本地文件
+
+# 输入配置
+# video_path: "./test/考核点2：困难捕捉与反馈/过家家（操作失败）.mp4"  # 本地视频路径或YouTube URL
+video_path: "./test/考核点2：困难捕捉与反馈/画画（工具缺失）.mp4"  # 本地视频路径或YouTube URL
+# video_path: "./test/考核点2：困难捕捉与反馈/过家家（情绪沮丧_卡顿停滞）.mp4"  # 本地视频路径或YouTube URL
+# video_path: "./test/考核点2：困难捕捉与反馈/过家家（求助行为）.mp4"  # 本地视频路径或YouTube URL
+
+# 提示词配置
+prompt: |
+      1. 桌面上有哪些东西
+      2. 儿童与这些东西的交互顺序（怎么交互）
+      3. 儿童在这个过程中表现出的情绪状态
+# -----------------------------------------------------
+# 自动评估器配置
+evaluator:
+  enabled: false  # true=评估模式, false=单视频模式
+  dataset_path: './test/考核点2：困难捕捉与反馈/'  # 数据集文件夹路径
+  results_path: './eval_results_gemini.json'  # 评估结果保存路径
+
+# -----------------------------------------------------
+# 使用示例:
+
+# 示例1: 使用 Google 官方 API (默认)
+# api_base_url: null
+# model: gemini-2.5-flash
+
+# 示例2: 使用代理服务
+# api_base_url: "https://your-proxy-service.com"
+# api_endpoint: "/v1beta/models/gemini-2.0-flash:generateContent"
+# model: gemini-2.0-flash
+# 
+# ⚠️ 注意事项:
+# 1. api_endpoint 中的模型名称要与代理服务支持的模型匹配
+# 2. 确保 GEMINI_API_KEY 是代理服务接受的格式
+# 3. 如果 SDK 不支持自定义 base_url，可以通过环境变量设置:
+#    export GOOGLE_API_BASE=https://your-proxy-service.com
+#    或在 Windows PowerShell 中:
+#    $env:GOOGLE_API_BASE="https://your-proxy-service.com"
+
+# 示例3: 单视频分析
+# evaluator.enabled = false
+# video_path = "./test/考核点1：活动状态识别/画画2.mov"
+
+# 示例2: 批量评估
+# evaluator.enabled = true
+# evaluator.dataset_path = './test/考核点1：活动状态识别/'
+
+# 示例3: YouTube 视频分析 (预览功能)
+# support_youtube = true
+# video_path = "https://www.youtube.com/watch?v=VIDEO_ID"
+
+# 示例4: 高质量模式 (使用 Pro 模型)
+# model = gemini-2.5-pro
+# media_resolution = default
+
+# 示例5: 快速模式 (使用 Flash 模型 + 低分辨率)
+# model = gemini-2.5-flash
+# media_resolution = low
+
+# 示例6: 自定义帧速率和时间裁剪
+# video_fps = 5  # 每秒5帧
+# video_start_offset = "10s"  # 从第10秒开始
+# video_end_offset = "60s"  # 到第60秒结束
